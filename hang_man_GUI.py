@@ -107,13 +107,76 @@ class SettingsPage(ctk.CTkFrame):
         self.controller.frames["GamePage"].initialise_game(word_length)
         self.controller.show_frame("GamePage")
 
+
 class GamePage(ctk.CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
 
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+        # Outer Frame to Center Content
+        self.game_frame = ctk.CTkFrame(self, corner_radius=15)
+        self.game_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+
+        self.game_frame.grid_rowconfigure(0, weight=1)
+        self.game_frame.grid_rowconfigure(1, weight=1)
+        self.game_frame.grid_rowconfigure(2, weight=1)
+        self.game_frame.grid_rowconfigure(3, weight=1)
+        self.game_frame.grid_columnconfigure(0, weight=1)
+        self.game_frame.grid_columnconfigure(1, weight=1)
+        self.game_frame.grid_columnconfigure(2, weight=1)
+
+        # Word Display:
+        self.word_frame = ctk.CTkFrame(self.game_frame, fg_color="transparent", bg_color="transparent")
+        self.word_frame.grid(row=0, column=0, columnspan=4, pady=10, padx=10)
+
+        # Computer guess:
+        self.guess_frame = ctk.CTkLabel(self.game_frame, text="Computer Guess = _", font=('Arial', 24, 'bold'), justify='center')
+        self.guess_frame.grid(row=1, column=0, columnspan=2, pady=10, sticky='nsew')
+
+        # Proceed Button:
+        self.proceed_button = ctk.CTkButton(self.game_frame, text="Proceed", command=self.store_guess)
+        self.proceed_button.grid(row=2, column=0, columnspan=2, pady=10)
+
+        # Hangman Display:
+        self.hangman_display = ctk.CTkFrame(self.game_frame, bg_color='transparent', fg_color='red')
+        self.hangman_display.grid(row=1, column=2, rowspan=3, padx=5, pady=5)
+
+        # Information:
+        self.info_display = ctk.CTkFrame(self.game_frame)
+
+
     def initialise_game(self, word_length):
+        self.word_length = word_length
         game = HangMan(word_length)
+
+        self.last_guess = ''
+        self.letter_boxes = []
+        self.word_update_display()
+    
+    def word_update_display(self):
+        for i in range(self.word_length):
+            btn = ctk.CTkButton(
+                self.word_frame,
+                text="_",
+                bg_color='transparent',
+                fg_color='white',
+                width=40,
+                height=40,
+                font=("Arial", 20, "bold"),
+                corner_radius=5,
+                command=lambda i=i: self.toggle_letter(i)  # Pass index to function
+            )
+            btn.pack(side="left", padx=5)
+            self.letter_boxes.append(btn)
+
+    def store_guess(self):
+        pass
+
+    def toggle_letter(self, ind):
+        pass
 
 
 if __name__ == "__main__":
