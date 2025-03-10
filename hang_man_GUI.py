@@ -133,34 +133,51 @@ class GamePage(ctk.CTkFrame):
         self.word_frame.grid(row=0, column=0, columnspan=4, pady=10, padx=10)
 
         # Computer guess:
-        self.guess_frame = ctk.CTkLabel(self.game_frame, text="Computer Guess = _", font=('Arial', 24, 'bold'), justify='center')
-        self.guess_frame.grid(row=1, column=0, columnspan=2, pady=10, sticky='nsew')
+        self.guess_frame = ctk.CTkFrame(self.game_frame, bg_color="transparent")
+        self.guess_frame.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky='nsew')
+        self.guess_frame.grid_rowconfigure(0, weight=1)
+        self.guess_frame.grid_columnconfigure(0, weight=1)
 
         # Proceed Button:
-        self.proceed_button = ctk.CTkButton(self.game_frame, text="Proceed", command=self.proceed)
-        self.proceed_button.grid(row=2, column=0, columnspan=2, pady=10)
+        self.proceed_button = ctk.CTkButton(self.game_frame, 
+                                            text="Proceed", 
+                                            font=("Arial", 16, "bold"),
+                                            height=35,
+                                            fg_color="#137dd9",
+                                            hover_color="#1565C0",
+                                            corner_radius=5,
+                                            command=self.proceed)
+        self.proceed_button.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
 
         # Hangman Display:
         self.hangman_display = ctk.CTkFrame(self.game_frame, bg_color='transparent', fg_color='white')
         self.hangman_display.grid(row=1, column=2, rowspan=3, padx=5, pady=5, sticky='nsew')
+        self.hangman_display.grid_rowconfigure(0, weight=1)
+        self.hangman_display.grid_columnconfigure(0, weight=1)
 
         # Information:
-        self.info_display = ctk.CTkFrame(self.game_frame)
+        self.info_display = ctk.CTkFrame(self.game_frame, bg_color="transparent")
+        self.info_display.grid(row=3, column=0, columnspan=2, padx=10, pady=10, sticky='nsew')
+        self.info_display.grid_rowconfigure(0, weight=1)
+        self.info_display.grid_rowconfigure(1, weight=1)
+        self.info_display.grid_rowconfigure(2, weight=1)
+        self.info_display.grid_rowconfigure(3, weight=1)
+        self.info_display.grid_columnconfigure(0, weight=1)
 
 
     def initialise_game(self, word_length):
-        self.word_length = word_length
         self.game = HangMan(word_length)
 
-        self.last_guess = 'A'
         self.letter_boxes = []
         self.initialise_word_display()
+        
+        self.computer_guess()
     
     def initialise_word_display(self):
-        for i in range(self.word_length):
+        for i in range(self.game.n):
             btn = ctk.CTkButton(
                 self.word_frame,
-                text='',
+                text='_',
                 text_color='black',
                 bg_color='transparent',
                 fg_color='white',
@@ -175,21 +192,62 @@ class GamePage(ctk.CTkFrame):
 
     def toggle_letter(self, ind):
         if self.game.word[ind] == '_':
-            self.game.word[ind] = self.last_guess
-            self.word_update_display(ind, self.last_guess)
-        elif self.game.word[ind] == self.last_guess:
+            self.game.word[ind] = self.game.last_guess
+            self.word_update_display(ind, self.game.last_guess.upper(), 'yellow')
+        else:
             self.game.word[ind] = '_'
-            self.word_update_display(ind, '')
-        else: pass
+            self.word_update_display(ind, '_', 'white')
 
-    def word_update_display(self, ind, chr):
-        self.letter_boxes[ind].configure(text=chr)
+    def word_update_display(self, ind, chr, col):
+        self.letter_boxes[ind].configure(text=chr, fg_color=col)
 
     def computer_guess(self):
+        game = self.game
+        comp_guess = game.guess()
+
+        for widget in self.guess_frame.winfo_children():
+            widget.destroy()
+
+        if len(comp_guess) == 1:
+            guess_label = ctk.CTkLabel(
+                self.guess_frame,
+                text=f"Computer Guess: {comp_guess.upper()}",
+                font=('Arial', 24, 'bold'),
+                justify="center"
+            )
+            guess_label.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+        else:
+            messagebox.showinfo("Game Over", f"The word is: {comp_guess.upper()}\nI win")
+
+    def initialise_hangman_drawing(self):
+        pass
+
+    def update_hangman_drawing(self):
+        pass
+
+    def initialise_information(self):
+        pass
+
+    def update_information(self):
         pass
 
     def proceed(self):
-        pass
+        # Construct current word:
+        word = ''
+        flag = False
+        for i, btn in enumerate(self.letter_boxes):
+            letter = btn.cget('text').lower()
+            word += letter
+            if letter == self.game.last_guess:
+                flag = True
+                self.letter_boxes[i].configure(fg_color='green', state='disabled')
+        # Update dictionary
+        if flag: self.game.update(word)
+        else: self.game.update()
+        # Generate next computer guess
+        self.computer_guess()
+
+
 
 if __name__ == "__main__":
     game = HangManGUI()

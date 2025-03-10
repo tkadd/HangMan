@@ -4,7 +4,7 @@ class HangMan:
 
     def __init__(self, n):
         self.n = n
-        self.word = '_'*n
+        self.word = ['_']*n
         self.guesses = list('abcdefghijklmnopqrstuvwxyz')
         self.guessed = set()
         self.last_guess = None
@@ -28,7 +28,7 @@ class HangMan:
         if word is None:
             self.filter(self.last_guess)
         else:
-            self.word = word
+            self.word = list(word)
 
             new_dictionary = []
             for word in self.dictionary:
@@ -37,7 +37,7 @@ class HangMan:
                     if self.word[i] == '_': pass
                     else:
                         if self.word[i] != chr:
-                            flag = True
+                            flag = False
                             break
                 if flag: new_dictionary.append(word)
             self.dictionary = new_dictionary
