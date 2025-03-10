@@ -137,12 +137,12 @@ class GamePage(ctk.CTkFrame):
         self.guess_frame.grid(row=1, column=0, columnspan=2, pady=10, sticky='nsew')
 
         # Proceed Button:
-        self.proceed_button = ctk.CTkButton(self.game_frame, text="Proceed", command=self.store_guess)
+        self.proceed_button = ctk.CTkButton(self.game_frame, text="Proceed", command=self.proceed)
         self.proceed_button.grid(row=2, column=0, columnspan=2, pady=10)
 
         # Hangman Display:
-        self.hangman_display = ctk.CTkFrame(self.game_frame, bg_color='transparent', fg_color='red')
-        self.hangman_display.grid(row=1, column=2, rowspan=3, padx=5, pady=5)
+        self.hangman_display = ctk.CTkFrame(self.game_frame, bg_color='transparent', fg_color='white')
+        self.hangman_display.grid(row=1, column=2, rowspan=3, padx=5, pady=5, sticky='nsew')
 
         # Information:
         self.info_display = ctk.CTkFrame(self.game_frame)
@@ -150,34 +150,46 @@ class GamePage(ctk.CTkFrame):
 
     def initialise_game(self, word_length):
         self.word_length = word_length
-        game = HangMan(word_length)
+        self.game = HangMan(word_length)
 
-        self.last_guess = ''
+        self.last_guess = 'A'
         self.letter_boxes = []
-        self.word_update_display()
+        self.initialise_word_display()
     
-    def word_update_display(self):
+    def initialise_word_display(self):
         for i in range(self.word_length):
             btn = ctk.CTkButton(
                 self.word_frame,
-                text="_",
+                text='',
+                text_color='black',
                 bg_color='transparent',
                 fg_color='white',
                 width=40,
                 height=40,
                 font=("Arial", 20, "bold"),
                 corner_radius=5,
-                command=lambda i=i: self.toggle_letter(i)  # Pass index to function
+                command=lambda i=i: self.toggle_letter(i)
             )
             btn.pack(side="left", padx=5)
             self.letter_boxes.append(btn)
 
-    def store_guess(self):
-        pass
-
     def toggle_letter(self, ind):
+        if self.game.word[ind] == '_':
+            self.game.word[ind] = self.last_guess
+            self.word_update_display(ind, self.last_guess)
+        elif self.game.word[ind] == self.last_guess:
+            self.game.word[ind] = '_'
+            self.word_update_display(ind, '')
+        else: pass
+
+    def word_update_display(self, ind, chr):
+        self.letter_boxes[ind].configure(text=chr)
+
+    def computer_guess(self):
         pass
 
+    def proceed(self):
+        pass
 
 if __name__ == "__main__":
     game = HangManGUI()
