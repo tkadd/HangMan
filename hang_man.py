@@ -22,25 +22,24 @@ class HangMan:
         new_dictionary = []
         for word in self.dictionary:
             if not letter in word: new_dictionary.append(word)
-        self.dictionary = new_dictionary
+        if not new_dictionary:
+            raise ValueError("No valid words left in the dictionary.")
+        else:
+            self.dictionary = new_dictionary
 
     def update(self, word=None):
         if word is None:
             self.filter(self.last_guess)
         else:
-            self.word = list(word)
-
             new_dictionary = []
-            for word in self.dictionary:
-                flag = True
-                for i, chr in enumerate(word):
-                    if self.word[i] == '_': pass
-                    else:
-                        if self.word[i] != chr:
-                            flag = False
-                            break
-                if flag: new_dictionary.append(word)
-            self.dictionary = new_dictionary
+            for temp_word in self.dictionary:
+                res = self.result(self.last_guess, temp_word)
+                if res == word: new_dictionary.append(temp_word)
+            self.word = list(word)
+            if not new_dictionary:
+                raise ValueError("No valid words left in the dictionary.")
+            else:
+                self.dictionary = new_dictionary
         
     def result(self, letter, target):
         result = ''
@@ -65,7 +64,9 @@ class HangMan:
         return guess_entropy
   
     def guess(self):
-        if len(self.dictionary) == 1:
+        if not self.dictionary:
+            raise ValueError("No valid words left in the dictionary.")
+        elif len(self.dictionary) == 1:
             return self.dictionary.pop()
         else:
             guess_entropy = self.entropy()
