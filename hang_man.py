@@ -1,4 +1,4 @@
-import numpy as np
+from numpy import log2
 
 class HangMan:
 
@@ -59,7 +59,7 @@ class HangMan:
                 res = self.result(letter, target)
                 if res in result_count: result_count[res] += 1
                 else: result_count[res] = 1
-            entropy = -sum((count/n)*np.log2(count/n) for count in result_count.values())
+            entropy = -sum((count/n)*log2(count/n) for count in result_count.values())
             guess_entropy[letter] = entropy
         return guess_entropy
   

@@ -76,7 +76,7 @@ class SettingsPage(ctk.CTkFrame):
         self.word_length_label = ctk.CTkLabel(word_length_frame, text="Word Length:", font=("Arial", 16))
         self.word_length_label.pack(side="left", padx=8)
 
-        self.word_length_entry = ctk.CTkEntry(word_length_frame, width=100, height=35, font=("Arial", 14), corner_radius=10, placeholder_text='e.g. 5')
+        self.word_length_entry = ctk.CTkEntry(word_length_frame, width=100, height=35, font=("Arial", 14), corner_radius=10)
         self.word_length_entry.pack(side="left")
 
         # Start Button
@@ -349,8 +349,8 @@ class HangManMessageBox(ctk.CTkToplevel):
         self.button_frame.grid_columnconfigure(0, weight=1)
         self.button_frame.grid_columnconfigure(1, weight=1)
         self.button_frame.pack(pady=10)
-        # Retry Button:
-        self.retry_button = ctk.CTkButton(self.button_frame, text="retry", command=self.retry_game)
+        # Play Again Button:
+        self.retry_button = ctk.CTkButton(self.button_frame, text="Play Again", command=self.retry_game)
         self.retry_button.grid(row=0, column=0, padx=10)
         # Exit Button:
         self.exit_button = ctk.CTkButton(self.button_frame, text="exit", command=self.exit_game)

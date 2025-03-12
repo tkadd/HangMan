@@ -1,6 +1,8 @@
 __pycache__/
 *.pyc
 *.pyo
+*.lnk
 
 *.txt
 clean_dictionary.py
+hang_man_executable
