@@ -3,4 +3,4 @@ __pycache__/
 *.pyo
 *.lnk
 clean_dictionary.py
-hang_man_executable
+hang_man_exe

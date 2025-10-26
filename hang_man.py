@@ -78,5 +78,5 @@ class HangMan:
             return guess
 
 if __name__ == '__main__':
-    game = HangMan(6)
-    print(game.dictionary)
+    game = HangMan(15)
+    print('phosphorescence' in game.dictionary)
